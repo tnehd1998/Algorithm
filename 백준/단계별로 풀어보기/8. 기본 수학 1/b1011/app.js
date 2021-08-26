@@ -20,7 +20,6 @@ function solution(num, array) {
     const y = array[i].y;
     let distance = y - x;
     let max = Math.floor(Math.sqrt(distance));
-
     if (max === Math.sqrt(distance)) {
       console.log(2 * max - 1);
     } else if (distance <= max * max + max) {
