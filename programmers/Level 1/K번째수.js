@@ -1,3 +1,6 @@
+// 생각한 풀이 방법
+// 1. command에 맞게 해당 값을 찾아 answer에 추가한 후 반환함
+
 function solution(array, commands) {
   let answer = [];
   for (let i = 0; i < commands.length; i++) {
