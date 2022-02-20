@@ -39,19 +39,19 @@ function solution(rectangle, characterX, characterY, itemX, itemY) {
 
   while (queue.length) {
     // BFS로 테두리를 탐색
-    const [nowX, nowY, price] = queue.shift();
+    const [currentX, currentY, count] = queue.shift();
 
-    if (nowX === itemX && nowY === itemY) {
-      return price / 2; // 먼저 도착점에 도착하면 해당 값을 반환
+    if (currentX === itemX && currentY === itemY) {
+      return count / 2; // 먼저 도착점에 도착하면 해당 값을 반환
     }
 
     for (let i = 0; i < 4; i++) {
-      const [nX, nY] = [nowX + directionX[i], nowY + directionY[i]];
+      const [nX, nY] = [currentX + directionX[i], currentY + directionY[i]];
 
       if (nX >= 0 && nX < 101 && nY >= 0 && nY < 101)
         if (map[nX][nY] === 1) {
           map[nX][nY] += 100; // 지나간 테두리는 100을 더해 다시 해당값을 탐색하지 않게 한다.
-          queue.push([nX, nY, price + 1]);
+          queue.push([nX, nY, count + 1]);
         }
     }
   }
