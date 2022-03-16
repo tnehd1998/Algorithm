@@ -1,3 +1,9 @@
+// 생각한 풀이 방법
+// 1. 이진 트리를 조건에 맞게 구현한다.
+// 2. Node를 연결할 때 기준을 x좌표를 기준으로 left, right를 판단한다.
+// 3. 이진 트리를 생성한 후, 전위 순회, 후위 순회를 한다.
+// 4. 각각의 결과를 preArr, postArr에 저장한 후 [preArr,postArr]를 반환한다.
+
 class Node {
   constructor(index, valueX) {
     this.index = index;
@@ -27,7 +33,7 @@ class Node {
 
 function preOrder(binaryTree, arr) {
   if (binaryTree !== null) {
-    arr.push(binaryTree.index);
+    arr.push(binaryTree.index); // 각각의 결과를 preArr에 저장
     preOrder(binaryTree.left, arr);
     preOrder(binaryTree.right, arr);
   }
@@ -37,7 +43,7 @@ function postOrder(binaryTree, arr) {
   if (binaryTree !== null) {
     postOrder(binaryTree.left, arr);
     postOrder(binaryTree.right, arr);
-    arr.push(binaryTree.index);
+    arr.push(binaryTree.index); // 각각의 결과를 postArr에 저장
   }
 }
 
@@ -54,11 +60,12 @@ function solution(nodeinfo) {
 
   const binaryTree = new Node(sortedNode[0][0], sortedNode[0][1]);
   for (let i = 1; i < sortedNode.length; i++) {
-    binaryTree.insert(sortedNode[i][0], sortedNode[i][1]);
+    // 이진 트리를 조건에 맞게 구현
+    binaryTree.insert(sortedNode[i][0], sortedNode[i][1]); // Node를 연결할 때 기준을 x좌표를 기준으로 left, right를 판단
   }
 
-  preOrder(binaryTree, preArr);
-  postOrder(binaryTree, postArr);
+  preOrder(binaryTree, preArr); // 전위 순회
+  postOrder(binaryTree, postArr); // 후위 순회
 
   return [preArr, postArr];
 }
