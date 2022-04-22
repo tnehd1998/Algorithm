@@ -36,8 +36,6 @@ function solution(board) {
     [1, 0, 2, 100],
   ]); // BFS를 통해 경로를 탐색
 
-  console.log(board[boardSize - 1][boardSize - 1]);
-
   return board[boardSize - 1][boardSize - 1];
 }
 
