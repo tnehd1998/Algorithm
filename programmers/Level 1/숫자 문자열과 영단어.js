@@ -23,6 +23,29 @@ function solution(s) {
   return answer;
 }
 
+function solution(s) {
+  let arr = [
+    "zero",
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight",
+    "nine",
+  ];
+
+  for (let i = 0; i < arr.length; i++) {
+    while (s.includes(arr[i])) {
+      s = s.replace(arr[i], i);
+    }
+  }
+
+  return Number(s);
+}
+
 console.log(solution("one4seveneight"));
 console.log(solution("23four5six7"));
 console.log(solution("1zerotwozero3"));

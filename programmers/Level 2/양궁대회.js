@@ -55,48 +55,98 @@
 // 1. 라이언이 이기는 경우
 // 2. 어피치가 이기는 경우
 
+// function solution(n, info) {
+//   let answer = Array(11).fill(0);
+//   let maxValue = 0;
+
+//   function searchAllValues(apeachPoint, ryanPoint, shots, point, arr) {
+//     if (n < shots) {
+//       return;
+//     }
+
+//     if (point > 10) {
+//       let currentPoint = ryanPoint - apeachPoint;
+//       if (currentPoint > maxValue) {
+//         arr[10] = n - shots;
+//         maxValue = currentPoint;
+//         answer = arr;
+//       }
+//       return;
+//     }
+
+//     if (n > shots) {
+//       let currentShot = info[10 - point] + 1;
+//       let currentArr = [...arr];
+//       currentArr[10 - point] = currentShot;
+//       searchAllValues(
+//         apeachPoint,
+//         ryanPoint + point,
+//         shots + currentShot,
+//         point + 1,
+//         currentArr
+//       );
+//     }
+
+//     if (info[10 - point] > 0) {
+//       searchAllValues(apeachPoint + point, ryanPoint, shots, point + 1, arr);
+//     } else {
+//       searchAllValues(apeachPoint, ryanPoint, shots, point + 1, arr);
+//     }
+//   }
+
+//   searchAllValues(0, 0, 0, 0, answer);
+
+//   return maxValue <= 0 ? [-1] : answer;
+// }
+
 function solution(n, info) {
   let answer = Array(11).fill(0);
-  let maxValue = 0;
+  let pointDiff = -1;
 
-  function searchAllValues(apeachPoint, ryanPoint, shots, point, arr) {
-    if (n < shots) {
+  function findAllPoints(apeachPoint, ryanPoint, currentPoint, usedShots, map) {
+    if (usedShots > n) {
       return;
     }
 
-    if (point > 10) {
-      let currentPoint = ryanPoint - apeachPoint;
-      if (currentPoint > maxValue) {
-        arr[10] = n - shots;
-        maxValue = currentPoint;
-        answer = arr;
+    if (currentPoint === 11) {
+      let diff = ryanPoint - apeachPoint;
+      if (diff > pointDiff) {
+        pointDiff = diff;
+        answer = map;
+        answer[10] = n - usedShots;
       }
       return;
     }
 
-    if (n > shots) {
-      let currentShot = info[10 - point] + 1;
-      let currentArr = [...arr];
-      currentArr[10 - point] = currentShot;
-      searchAllValues(
+    if (usedShots < n) {
+      let apeachArrows = info[10 - currentPoint];
+      let currentArr = [...map];
+      currentArr[10 - currentPoint] = apeachArrows + 1;
+      findAllPoints(
         apeachPoint,
-        ryanPoint + point,
-        shots + currentShot,
-        point + 1,
+        ryanPoint + currentPoint,
+        currentPoint + 1,
+        usedShots + apeachArrows + 1,
         currentArr
       );
     }
 
-    if (info[10 - point] > 0) {
-      searchAllValues(apeachPoint + point, ryanPoint, shots, point + 1, arr);
+    if (info[10 - currentPoint] > 0) {
+      findAllPoints(
+        apeachPoint + currentPoint,
+        ryanPoint,
+        currentPoint + 1,
+        usedShots,
+        map
+      );
     } else {
-      searchAllValues(apeachPoint, ryanPoint, shots, point + 1, arr);
+      findAllPoints(apeachPoint, ryanPoint, currentPoint + 1, usedShots, map);
     }
   }
 
-  searchAllValues(0, 0, 0, 0, answer);
+  findAllPoints(0, 0, 0, 0, answer);
 
-  return maxValue <= 0 ? [-1] : answer;
+  return pointDiff <= 0 ? [-1] : answer;
 }
 
 console.log(solution(5, [2, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0]));

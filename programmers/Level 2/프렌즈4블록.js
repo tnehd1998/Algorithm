@@ -5,48 +5,107 @@
 // 4. 1~3의 작업을 만족하는 점이 없을 때까지 반복한다.
 // 5. board중 값이 0인 경우, answer을 증가시킨다.
 
+// function solution(m, n, board) {
+//   let answer = 0;
+//   let poppedArr = [];
+
+//   board = board.map((current) => current.split(""));
+
+//   while (true) {
+//     // 1~3의 작업을 만족하는 점이 없을 때까지 반복한다
+//     for (let i = 0; i < m - 1; i++) {
+//       for (let j = 0; j < n - 1; j++) {
+//         let current = board[i][j];
+//         if (current !== 0) {
+//           // 2x2를 만족하는 점을 찾는다
+//           if (
+//             board[i + 1][j] === current &&
+//             board[i][j + 1] === current &&
+//             board[i + 1][j + 1] === current
+//           ) {
+//             poppedArr.push([i, j]);
+//           }
+//         }
+//       }
+//     }
+
+//     if (poppedArr.length === 0) {
+//       // 만족하는 점이 없을 때
+//       break;
+//     }
+
+//     for (let i = 0; i < poppedArr.length; i++) {
+//       // 해당 점들을 0으로 바꾼다.
+//       let [m, n] = poppedArr[i];
+//       board[m][n] = 0;
+//       board[m + 1][n] = 0;
+//       board[m][n + 1] = 0;
+//       board[m + 1][n + 1] = 0;
+//     }
+
+//     for (let i = 0; i < m; i++) {
+//       for (let j = 0; j < n; j++) {
+//         if (board[i][j] === 0) {
+//           // board의 점 중 0인 경우 해당 점 위의 점들을 한칸 내린다.
+//           for (let k = i; k > 0; k--) {
+//             board[k][j] = board[k - 1][j];
+//           }
+//           board[0][j] = 0;
+//         }
+//       }
+//     }
+//     poppedArr = [];
+//   }
+
+//   for (let i = 0; i < m; i++) {
+//     for (let j = 0; j < n; j++) {
+//       if (board[i][j] === 0) {
+//         //  board중 값이 0인 경우, answer을 증가시킨다.
+//         answer++;
+//       }
+//     }
+//   }
+
+//   return answer;
+// }
+
 function solution(m, n, board) {
   let answer = 0;
-  let poppedArr = [];
 
   board = board.map((current) => current.split(""));
 
   while (true) {
-    // 1~3의 작업을 만족하는 점이 없을 때까지 반복한다
+    let poppingBlock = [];
     for (let i = 0; i < m - 1; i++) {
       for (let j = 0; j < n - 1; j++) {
         let current = board[i][j];
         if (current !== 0) {
-          // 2x2를 만족하는 점을 찾는다
           if (
             board[i + 1][j] === current &&
             board[i][j + 1] === current &&
             board[i + 1][j + 1] === current
           ) {
-            poppedArr.push([i, j]);
+            poppingBlock.push([i, j]);
           }
         }
       }
     }
 
-    if (poppedArr.length === 0) {
-      // 만족하는 점이 없을 때
+    if (poppingBlock.length === 0) {
       break;
     }
 
-    for (let i = 0; i < poppedArr.length; i++) {
-      // 해당 점들을 0으로 바꾼다.
-      let [m, n] = poppedArr[i];
-      board[m][n] = 0;
-      board[m + 1][n] = 0;
-      board[m][n + 1] = 0;
-      board[m + 1][n + 1] = 0;
+    for (let i = 0; i < poppingBlock.length; i++) {
+      let [currentX, currentY] = poppingBlock[i];
+      board[currentX][currentY] = 0;
+      board[currentX + 1][currentY] = 0;
+      board[currentX][currentY + 1] = 0;
+      board[currentX + 1][currentY + 1] = 0;
     }
 
     for (let i = 0; i < m; i++) {
       for (let j = 0; j < n; j++) {
         if (board[i][j] === 0) {
-          // board의 점 중 0인 경우 해당 점 위의 점들을 한칸 내린다.
           for (let k = i; k > 0; k--) {
             board[k][j] = board[k - 1][j];
           }
@@ -54,13 +113,11 @@ function solution(m, n, board) {
         }
       }
     }
-    poppedArr = [];
   }
 
   for (let i = 0; i < m; i++) {
     for (let j = 0; j < n; j++) {
       if (board[i][j] === 0) {
-        //  board중 값이 0인 경우, answer을 증가시킨다.
         answer++;
       }
     }

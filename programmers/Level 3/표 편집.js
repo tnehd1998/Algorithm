@@ -62,97 +62,212 @@
 // 1. 양방향 링크드리스크를 k만큼 생성 후, n지점을 currentNode로 설정한다.
 // 2. 명령에 맞는 작업을 진행한다.
 
-const Node = function (index, prevNode) {
-  this.index = index;
-  this.prev = prevNode;
-  this.next;
+// const Node = function (index, prevNode) {
+//   this.index = index;
+//   this.prev = prevNode;
+//   this.next;
+// };
+
+// function solution(n, k, cmd) {
+//   let answer = Array(n).fill("O");
+//   let root = new Node(0);
+//   let currentNode = root;
+//   let prevNode = root;
+
+//   for (let i = 1; i < n; i++) {
+//     const newNode = new Node(i, prevNode);
+//     prevNode.next = newNode;
+//     prevNode = newNode;
+
+//     if (i === k) {
+//       currentNode = newNode;
+//     }
+//   }
+
+//   const history = [];
+//   cmd.map((current) => {
+//     const [command, count] = current.split(" ");
+//     let i = 0;
+//     switch (command) {
+//       case "U":
+//         while (i < count && currentNode.prev) {
+//           currentNode = currentNode.prev;
+//           i++;
+//         }
+//         break;
+//       case "D":
+//         while (i < count && currentNode.next) {
+//           currentNode = currentNode.next;
+//           i++;
+//         }
+//         break;
+//       case "C":
+//         history.push(currentNode);
+//         const prev = currentNode.prev;
+//         const next = currentNode.next;
+//         if (prev && next) {
+//           prev.next = next;
+//           next.prev = prev;
+//           currentNode = next;
+//         } else if (prev) {
+//           prev.next = null;
+//           currentNode = prev;
+//         } else if (next) {
+//           next.prev = null;
+//           currentNode = next;
+//         }
+//         break;
+//       case "Z":
+//         const node = history.pop();
+//         const prevNode = node.prev;
+//         const nextNode = node.next;
+//         if (prevNode) {
+//           prevNode.next = node;
+//         }
+//         if (nextNode) {
+//           nextNode.prev = node;
+//         }
+//         break;
+//     }
+//   });
+
+//   history.map((node) => {
+//     answer[node.index] = "X";
+//   });
+
+//   return answer.join("");
+// }
+
+// function solution(n, k, cmd) {
+//   let answer = Array(n).fill("O");
+//   let totalArr = Array.from({ length: n }, (_, index) => index);
+//   let deletedArr = [];
+//   let currentPoint = k;
+
+//   for (let i = 0; i < cmd.length; i++) {
+//     let currentCmd = cmd[i].split(" ");
+//     switch (currentCmd[0]) {
+//       case "U":
+//         currentPoint -= Number(currentCmd[1]);
+//         break;
+//       case "D":
+//         currentPoint += Number(currentCmd[1]);
+//         break;
+//       case "C":
+//         n--;
+//         let value = totalArr.splice(currentPoint, 1);
+//         deletedArr.push(...value);
+//         if (currentPoint === n) {
+//           currentPoint--;
+//         }
+//         break;
+//       case "Z":
+//         let poppedValue = deletedArr.pop();
+//         n++;
+//         if (totalArr[currentPoint] >= poppedValue) {
+//           currentPoint++;
+//         }
+//         totalArr.push(poppedValue);
+//         totalArr.sort((a, b) => a - b);
+//         break;
+//       default:
+//         break;
+//     }
+//   }
+
+//   for (let i = 0; i < deletedArr.length; i++) {
+//     answer[deletedArr[i]] = "X";
+//   }
+
+//   return answer.join("");
+// }
+
+const Node = function (value, prevNode) {
+  this.value = value;
+  this.prevNode = prevNode;
+  this.nextNode;
 };
 
 function solution(n, k, cmd) {
   let answer = Array(n).fill("O");
   let root = new Node(0);
   let currentNode = root;
-  let prevNode = root;
+  let previousNode = root;
 
   for (let i = 1; i < n; i++) {
-    const newNode = new Node(i, prevNode);
-    prevNode.next = newNode;
-    prevNode = newNode;
+    let newNode = new Node(i, previousNode);
+    previousNode.nextNode = newNode;
+    previousNode = newNode;
 
     if (i === k) {
       currentNode = newNode;
     }
   }
 
-  const history = [];
-  cmd.map((current) => {
-    const [command, count] = current.split(" ");
-    let i = 0;
-    switch (command) {
+  let deletedNode = [];
+
+  for (let i = 0; i < cmd.length; i++) {
+    let currentCmd = cmd[i].split(" ");
+    switch (currentCmd[0]) {
       case "U":
-        while (i < count && currentNode.prev) {
-          currentNode = currentNode.prev;
-          i++;
+        for (let j = 0; j < Number(currentCmd[1]); j++) {
+          currentNode = currentNode.prevNode;
         }
         break;
       case "D":
-        while (i < count && currentNode.next) {
-          currentNode = currentNode.next;
-          i++;
+        for (let j = 0; j < Number(currentCmd[1]); j++) {
+          currentNode = currentNode.nextNode;
         }
         break;
       case "C":
-        history.push(currentNode);
-        const prev = currentNode.prev;
-        const next = currentNode.next;
-        if (prev && next) {
-          prev.next = next;
-          next.prev = prev;
-          currentNode = next;
-        } else if (prev) {
-          prev.next = null;
-          currentNode = prev;
-        } else if (next) {
-          next.prev = null;
-          currentNode = next;
+        deletedNode.push(currentNode);
+        let prevNode = currentNode.prevNode;
+        let nextNode = currentNode.nextNode;
+        if (prevNode && nextNode) {
+          prevNode.nextNode = nextNode;
+          nextNode.prevNode = prevNode;
+          currentNode = nextNode;
+        } else if (prevNode) {
+          prevNode.nextNode = null;
+          currentNode = prevNode;
+        } else if (nextNode) {
+          nextNode.prevNode = null;
+          currentNode = nextNode;
         }
         break;
       case "Z":
-        const node = history.pop();
-        const prevNode = node.prev;
-        const nextNode = node.next;
-        if (prevNode) {
-          prevNode.next = node;
+        let poppedNode = deletedNode.pop();
+        let poppedNodePrev = poppedNode.prevNode;
+        let poppedNodeNext = poppedNode.nextNode;
+        if (poppedNodePrev) {
+          poppedNodePrev.nextNode = poppedNode;
         }
-        if (nextNode) {
-          nextNode.prev = node;
+        if (poppedNodeNext) {
+          poppedNodeNext.prevNode = poppedNode;
         }
         break;
     }
-  });
+  }
 
-  history.map((node) => {
-    answer[node.index] = "X";
-  });
+  for (let i = 0; i < deletedNode.length; i++) {
+    let current = deletedNode[i];
+    answer[current.value] = "X";
+  }
 
   return answer.join("");
 }
 
-console.log(
-  solution(8, 2, ["D 2", "C", "U 3", "C", "D 4", "C", "U 2", "Z", "Z"])
-);
-console.log(
-  solution(8, 2, [
-    "D 2",
-    "C",
-    "U 3",
-    "C",
-    "D 4",
-    "C",
-    "U 2",
-    "Z",
-    "Z",
-    "U 1",
-    "C",
-  ])
-);
+solution(8, 2, ["D 2", "C", "U 3", "C", "D 4", "C", "U 2", "Z", "Z"]);
+solution(8, 2, [
+  "D 2",
+  "C",
+  "U 3",
+  "C",
+  "D 4",
+  "C",
+  "U 2",
+  "Z",
+  "Z",
+  "U 1",
+  "C",
+]);
