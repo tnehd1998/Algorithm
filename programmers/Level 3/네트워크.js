@@ -43,24 +43,52 @@
 // 3. 방문한 컴퓨터는 해당 컴퓨터의 값을 true로 바꿈
 // 4. 방문할 때마다 answer을 증가시킴
 
+// function solution(n, computers) {
+//   let answer = 0;
+//   const visited = Array(n).fill(false);
+
+//   function dfs(current) {
+//     visited[current] = true; // 방문한 컴퓨터는 해당 컴퓨터의 값을 true로 바꿈
+//     for (let i = 0; i < computers.length; i++) {
+//       if (computers[current][i] && !visited[i]) {
+//         dfs(i);
+//       }
+//     }
+//   }
+
+//   for (let i = 0; i < computers.length; i++) {
+//     // visited가 false이면 DFS로 탐색을 함
+//     if (!visited[i]) {
+//       dfs(i);
+//       answer++; // 방문할 때마다 answer을 증가시킴
+//     }
+//   }
+
+//   return answer;
+// }
+
 function solution(n, computers) {
   let answer = 0;
-  const visited = Array(n).fill(false);
+  let visited = Array(n).fill(false);
 
   function dfs(current) {
-    visited[current] = true; // 방문한 컴퓨터는 해당 컴퓨터의 값을 true로 바꿈
-    for (let i = 0; i < computers.length; i++) {
+    if (visited[current]) {
+      return;
+    }
+
+    visited[current] = true;
+
+    for (let i = 0; i < n; i++) {
       if (computers[current][i] && !visited[i]) {
         dfs(i);
       }
     }
   }
 
-  for (let i = 0; i < computers.length; i++) {
-    // visited가 false이면 DFS로 탐색을 함
+  for (let i = 0; i < n; i++) {
     if (!visited[i]) {
       dfs(i);
-      answer++; // 방문할 때마다 answer을 증가시킴
+      answer++;
     }
   }
 
