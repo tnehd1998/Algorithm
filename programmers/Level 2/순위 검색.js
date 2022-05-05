@@ -61,46 +61,117 @@
 // 3-1. 존재하면 이분 탐색을 활용해 해당 값 또는 해당 값보다 하나 작은 값을 구한 후, 해당 값을 전체 값에서 뺀값을 push한다.
 // 3-2. 존재하지 않으면 0을 반환한다.
 
+// function solution(info, query) {
+//   let answer = [];
+//   let developers = {};
+
+//   function possibilities(infos, score, map, start) {
+//     let key = infos.join("");
+//     let value = map[key];
+
+//     if (value) {
+//       map[key].push(+score);
+//     } else {
+//       map[key] = [+score];
+//     }
+
+//     for (let i = start; i < infos.length; i++) {
+//       let arr = [...infos];
+//       arr[i] = "-";
+//       possibilities(arr, score, map, i + 1); // 개발자를 나타내는 가능한 모든 경우를 developers에 저장한다.
+//     }
+//   }
+
+//   for (let i = 0; i < info.length; i++) {
+//     let currentInfo = info[i].split(" ");
+//     let score = currentInfo.pop();
+
+//     possibilities(currentInfo, score, developers, 0);
+//   }
+
+//   for (const key in developers) {
+//     developers[key] = developers[key].sort((a, b) => a - b); // 모든 값들의 score값을 기준으로 정렬한다
+//   }
+
+//   function getAnswer(score, arr) {
+//     let start = 0;
+//     let end = arr.length - 1;
+//     let mid = Math.floor((start + end) / 2);
+//     while (start <= end) {
+//       if (arr[mid] === score) {
+//         return mid;
+//       }
+//       if (arr[mid] < score) {
+//         start = mid + 1;
+//       } else {
+//         end = mid - 1;
+//       }
+
+//       mid = Math.floor((start + end) / 2);
+//     }
+
+//     return mid + 1;
+//   }
+
+//   for (let i = 0; i < query.length; i++) {
+//     // currentQuery에 and를 제외
+//     let currentQuery = query[i].split(" ").filter((item) => item !== "and");
+//     let score = currentQuery.pop();
+//     currentQuery = currentQuery.join("");
+//     // 해당 조건이 developers에 존재하는지 확인
+//     if (developers[currentQuery]) {
+//       // 존재하면 이분 탐색을 활용해 해당 값또는 해당 값보다 하나 작은 값을 구한 후, 해당 값을 전체 값에서 뺀값을 push한다.
+//       let count =
+//         developers[currentQuery].length -
+//         getAnswer(score, developers[currentQuery]);
+//       answer.push(count);
+//     } else {
+//       // 존재하지 않으면 0을 push한다.
+//       answer.push(0);
+//     }
+//   }
+
+//   return answer;
+// }
+
 function solution(info, query) {
   let answer = [];
-  let developers = {};
+  let allPossibilities = {};
 
-  function possibilities(infos, score, map, start) {
+  function getAllPossibilities(infos, score, start) {
     let key = infos.join("");
-    let value = map[key];
+    let value = allPossibilities[key];
 
     if (value) {
-      map[key].push(+score);
+      allPossibilities[key].push(score);
     } else {
-      map[key] = [+score];
+      allPossibilities[key] = [score];
     }
 
     for (let i = start; i < infos.length; i++) {
       let arr = [...infos];
       arr[i] = "-";
-      possibilities(arr, score, map, i + 1); // 개발자를 나타내는 가능한 모든 경우를 developers에 저장한다.
+      getAllPossibilities(arr, score, i + 1);
     }
   }
 
   for (let i = 0; i < info.length; i++) {
-    let currentInfo = info[i].split(" ");
-    let score = currentInfo.pop();
+    let current = info[i].split(" ");
+    let score = Number(current.pop());
 
-    possibilities(currentInfo, score, developers, 0);
+    getAllPossibilities(current, score, 0);
   }
 
-  for (const key in developers) {
-    developers[key] = developers[key].sort((a, b) => a - b); // 모든 값들의 score값을 기준으로 정렬한다
+  for (let key in allPossibilities) {
+    allPossibilities[key] = allPossibilities[key].sort((a, b) => a - b);
   }
 
   function getAnswer(score, arr) {
     let start = 0;
     let end = arr.length - 1;
     let mid = Math.floor((start + end) / 2);
+
     while (start <= end) {
-      if (arr[mid] === score) {
-        return mid;
-      }
       if (arr[mid] < score) {
         start = mid + 1;
       } else {
@@ -114,19 +185,14 @@ function solution(info, query) {
   }
 
   for (let i = 0; i < query.length; i++) {
-    // currentQuery에 and를 제외
-    let currentQuery = query[i].split(" ").filter((item) => item !== "and");
-    let score = currentQuery.pop();
-    currentQuery = currentQuery.join("");
-    // 해당 조건이 developers에 존재하는지 확인
-    if (developers[currentQuery]) {
-      // 존재하면 이분 탐색을 활용해 해당 값또는 해당 값보다 하나 작은 값을 구한 후, 해당 값을 전체 값에서 뺀값을 push한다.
-      let count =
-        developers[currentQuery].length -
-        getAnswer(score, developers[currentQuery]);
+    let currentQuery = query[i].split(" ").filter((word) => word !== "and");
+    let score = +currentQuery.pop();
+    let combinedQuery = currentQuery.join("");
+    let scoreArr = allPossibilities[combinedQuery];
+    if (scoreArr) {
+      let count = scoreArr.length - getAnswer(score, scoreArr);
       answer.push(count);
     } else {
-      // 존재하지 않으면 0을 push한다.
       answer.push(0);
     }
   }
@@ -143,6 +209,7 @@ console.log(
       "cpp backend senior pizza 260",
       "java backend junior chicken 80",
       "python backend senior chicken 50",
+      "java frontend junior pizza 150",
     ],
     [
       "java and backend and junior and pizza 100",

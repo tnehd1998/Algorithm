@@ -2,38 +2,74 @@
 // 1. 플로이드 와샬 알고리즘을 활용하여 최단 경로를 구한다.
 // 2. 모든 점을 순회하여 각각 합승지점으로 가정한 후 최소 요금 경로 값을 answer에 저장한다.
 
+// function solution(n, s, a, b, fares) {
+//   // 플로이드 와샬 알고리즘을 활용하여 최단 경로를 구한다
+//   let path = Array.from({ length: n + 1 }, () =>
+//     Array(n + 1).fill(Number.MAX_SAFE_INTEGER)
+//   );
+
+//   for (let i = 1; i <= n; i++) {
+//     path[i][i] = 0;
+//   }
+
+//   for (let i = 0; i < fares.length; i++) {
+//     let [from, to, value] = fares[i];
+//     path[from][to] = value;
+//     path[to][from] = value;
+//   }
+
+//   for (let k = 1; k <= n; k++) {
+//     for (let i = 1; i <= n; i++) {
+//       for (let j = 1; j <= n; j++) {
+//         if (path[i][k] + path[k][j] < path[i][j]) {
+//           path[i][j] = path[i][k] + path[k][j];
+//         }
+//       }
+//     }
+//   }
+
+//   let answer = path[s][a] + path[s][b];
+
+//   for (let i = 1; i <= n; i++) {
+//     // 모든 점을 순회
+//     let current = path[s][i] + path[i][a] + path[i][b]; // 합승지점으로 가정
+//     answer = Math.min(current, answer); // 최소 요금 경로 값을 answer에 저장
+//   }
+
+//   return answer;
+// }
+
 function solution(n, s, a, b, fares) {
-  // 플로이드 와샬 알고리즘을 활용하여 최단 경로를 구한다
-  let path = Array.from({ length: n + 1 }, () =>
+  let arr = Array.from({ length: n + 1 }, () =>
     Array(n + 1).fill(Number.MAX_SAFE_INTEGER)
   );
 
-  for (let i = 1; i <= n; i++) {
-    path[i][i] = 0;
+  for (let i = 1; i < arr.length; i++) {
+    arr[i][i] = 0;
   }
 
   for (let i = 0; i < fares.length; i++) {
-    let [from, to, value] = fares[i];
-    path[from][to] = value;
-    path[to][from] = value;
+    let [from, to, cost] = fares[i];
+    arr[from][to] = cost;
+    arr[to][from] = cost;
   }
 
-  for (let k = 1; k <= n; k++) {
-    for (let i = 1; i <= n; i++) {
-      for (let j = 1; j <= n; j++) {
-        if (path[i][k] + path[k][j] < path[i][j]) {
-          path[i][j] = path[i][k] + path[k][j];
+  for (let i = 1; i < n + 1; i++) {
+    for (let j = 1; j < n + 1; j++) {
+      for (let k = 1; k < n + 1; k++) {
+        let current = arr[j][i] + arr[i][k];
+        if (arr[j][k] > current) {
+          arr[j][k] = current;
         }
       }
     }
   }
 
-  let answer = path[s][a] + path[s][b];
+  let answer = arr[s][a] + arr[s][b];
 
-  for (let i = 1; i <= n; i++) {
-    // 모든 점을 순회
-    let current = path[s][i] + path[i][a] + path[i][b]; // 합승지점으로 가정
-    answer = Math.min(current, answer); // 최소 요금 경로 값을 answer에 저장
+  for (let i = 1; i < n + 1; i++) {
+    let current = arr[s][i] + arr[i][a] + arr[i][b];
+    answer = Math.min(answer, current);
   }
 
   return answer;
