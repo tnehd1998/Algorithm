@@ -42,30 +42,56 @@
 // 2. end의 경우 모든 gem이 포함될때까지 index를 증가시킨다.
 // 3. end의 값을 구한 후, start의 인덱스를 하나씩 증가시키며 모든 gem이 포함되는 경우까지 인덱스 값을 증가시킨다.
 
+// function solution(gems) {
+//   let answer = [1, gems.length];
+//   let totalGem = new Set(gems).size;
+
+//   let start = 0; // 시작 인덱스를 나타내는 start
+//   let end = 0; // 마지막 인덱스를 나타내는 end
+//   let map = new Map();
+//   map.set(gems[0], 1);
+
+//   while (end < gems.length) {
+//     console.log(end, gems.length);
+//     if (map.size === totalGem) {
+//       // end의 값을 구한 후
+//       if (answer[1] - answer[0] > end - start) {
+//         answer = [start + 1, end + 1];
+//       }
+//       map.set(gems[start], map.get(gems[start]) - 1);
+//       if (map.get(gems[start]) === 0) {
+//         map.delete(gems[start]);
+//       }
+//       start++; // start의 인덱스를 하나씩 증가
+//     } else {
+//       end++; // 모든 gem이 포함될때까지 index를 증가
+//       let value = map.get(gems[end]);
+//       map.set(gems[end], value ? value + 1 : 1);
+//     }
+//   }
+
+//   return answer;
+// }
+
 function solution(gems) {
   let answer = [1, gems.length];
-  let totalGem = new Set(gems).size;
+  let totalGem = new Set(gems);
 
-  let start = 0; // 시작 인덱스를 나타내는 start
-  let end = 0; // 마지막 인덱스를 나타내는 end
-  let map = new Map();
-  map.set(gems[0], 1);
+  let startIndex = 0;
+  let endIndex = totalGem.size - 1;
+  let currentGems = gems.slice(0, endIndex + 1);
 
-  while (end < gems.length) {
-    if (map.size === totalGem) {
-      // end의 값을 구한 후
-      if (answer[1] - answer[0] > end - start) {
-        answer = [start + 1, end + 1];
+  while (endIndex < gems.length) {
+    if (new Set(currentGems).size === totalGem.size) {
+      if (answer[1] - answer[0] > endIndex - startIndex) {
+        answer = [startIndex + 1, endIndex + 1];
       }
-      map.set(gems[start], map.get(gems[start]) - 1);
-      if (map.get(gems[start]) === 0) {
-        map.delete(gems[start]);
-      }
-      start++; // start의 인덱스를 하나씩 증가
+      currentGems.shift();
+      startIndex++;
     } else {
-      end++; // 모든 gem이 포함될때까지 index를 증가
-      let value = map.get(gems[end]);
-      map.set(gems[end], value ? value + 1 : 1);
+      endIndex++;
+      let nextGem = gems[endIndex];
+      currentGems.push(nextGem);
     }
   }
 
